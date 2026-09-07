@@ -8,7 +8,7 @@ export function IndustrialScene() {
   const b = useRef<THREE.Mesh>(null)
 
   useFrame((_, delta) => {
-    const show = visual.year > 1580 && visual.year < 1935
+    const show = visual.year > 1480 && visual.year < 1935
     const speed = visual.theme.animationSpeed
     if (a.current) {
       a.current.visible = show

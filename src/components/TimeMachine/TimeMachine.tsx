@@ -42,14 +42,12 @@ import {
 } from '../../engine/timeEngine.ts'
 import { useMousePosition } from '../../hooks/useMousePosition.ts'
 import { useIsMobile, usePrefersReducedMotion } from '../../hooks/useMedia.ts'
-import { useSmoothScroll } from '../../hooks/useSmoothScroll.ts'
 import { useTimeline } from '../../hooks/useTimeline.ts'
 import { MAX_YEAR, MIN_YEAR, PRESENT_YEAR, tToYear, yearToT } from '../../utils/timeline.ts'
 
 const Scene = lazy(() => import('../Three/Scene.tsx'))
 
 export function TimeMachine() {
-  useSmoothScroll()
   const { introComplete, reducedMotion } = useTimeline()
   const mobile = useIsMobile()
   const prefersReduced = usePrefersReducedMotion()

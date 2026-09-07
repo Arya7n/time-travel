@@ -68,7 +68,7 @@ export function Scene({ mobile, reduced }: { mobile: boolean; reduced: boolean }
         camera={{ position: [0, 1.4, 7.2], fov: 42, near: 0.1, far: 80 }}
         gl={{ antialias: !mobile, alpha: true, powerPreference: 'high-performance' }}
         frameloop={reduced ? 'demand' : 'always'}
-        style={{ pointerEvents: 'none' }}
+        style={{ pointerEvents: 'none', width: '100%', height: '100%' }}
       >
         <fog attach="fog" args={['#07080c', 8, 32]} />
         <ambientLight intensity={0.45} />
