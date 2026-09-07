@@ -450,15 +450,20 @@ export const ERAS: Era[] = [
     description:
       'Civilizations invent writing, law, and monument. Time is measured in floods, stars, and kings.',
     quote: 'The Nile is the gift that remembers.',
+    quoteBy: 'After Herodotus',
     facts: [
       { label: 'Script', value: 'Cuneiform · Hieroglyph' },
-      { label: 'Measure', value: 'Sundial · Clepsydra' },
-      { label: 'Power', value: 'Temple · Empire' },
+      { label: 'Measure', value: 'Sundial · water clock' },
+      { label: 'Power', value: 'Temple · empire' },
+      { label: 'City', value: 'Uruk · Memphis · Athens' },
+      { label: 'Metal', value: 'Bronze, then iron' },
     ],
     sections: [
       { title: 'Stone', body: 'Monument as memory. Pyramids, ziggurats, and columns outlast the people who raised them.' },
-      { title: 'Law', body: 'Codes cut into stone turn custom into continuity.' },
-      { title: 'Myth', body: 'Gods explain flood, harvest, and the turning of the sky.' },
+      { title: 'Law', body: 'Codes cut into stone turn custom into continuity. A public text can outlive a king.' },
+      { title: 'Myth', body: 'Gods explain flood, harvest, and the turning of the sky — the first operating system of weather.' },
+      { title: 'Writing', body: 'Clay and papyrus make administration possible. Grain, debt, and names become durable.' },
+      { title: 'Sea', body: 'The Mediterranean becomes a room. Oars and stars keep a schedule before clocks exist.' },
     ],
   },
   {
@@ -470,15 +475,20 @@ export const ERAS: Era[] = [
     description:
       'Knowledge hides in scriptoria. Gold leaf, gothic vaults, and maps of a world still incomplete.',
     quote: 'In the margins, the world was drawn twice.',
+    quoteBy: 'A nameless scribe',
     facts: [
-      { label: 'Page', value: 'Vellum · Illumination' },
+      { label: 'Page', value: 'Vellum · gold leaf' },
       { label: 'Travel', value: 'Pilgrim · Silk Road' },
-      { label: 'Power', value: 'Crown · Cloister' },
+      { label: 'Power', value: 'Crown · cloister' },
+      { label: 'Clock', value: 'Bells, not minutes' },
+      { label: 'Map', value: 'Faithful, incomplete' },
     ],
     sections: [
-      { title: 'Manuscript', body: 'A book is a reliquary. Ink is time made visible.' },
-      { title: 'Castle', body: 'Stone walls define the horizon of political life.' },
-      { title: 'Map', body: 'Here be lions — and the hunger to know the edge.' },
+      { title: 'Manuscript', body: 'A book is a reliquary. Copying is both labor and prayer; error is a kind of evolution.' },
+      { title: 'Castle', body: 'Stone walls define the horizon of political life. The road between them is the state.' },
+      { title: 'Map', body: 'Here be lions — and the hunger to know the edge. Geography is still half a sermon.' },
+      { title: 'Guild', body: 'Skill is inherited more often than invented. Time is counted in apprenticeships.' },
+      { title: 'Plague', body: 'A bacterium redraws labor. Survivors inherit empty fields and new bargains.' },
     ],
   },
   {
@@ -490,15 +500,20 @@ export const ERAS: Era[] = [
     description:
       'The world is redrawn as a machine. Rail, telegraph, and factory clocks replace the sun.',
     quote: 'Accuracy is a kind of power.',
+    quoteBy: 'An engineer’s notebook',
     facts: [
-      { label: 'Force', value: 'Steam · Coal' },
+      { label: 'Force', value: 'Steam · coal' },
       { label: 'Signal', value: 'Telegraph' },
       { label: 'Clock', value: 'Factory hour' },
+      { label: 'City', value: 'Smoke · iron · grid' },
+      { label: 'Scale', value: 'The first billions' },
     ],
     sections: [
-      { title: 'Engine', body: 'Heat becomes motion. Motion becomes empire.' },
-      { title: 'Blueprint', body: 'The drawing precedes the city.' },
-      { title: 'Rail', body: 'Distance collapses into timetable.' },
+      { title: 'Engine', body: 'Heat becomes motion. Motion becomes empire. A boiler is a political object.' },
+      { title: 'Blueprint', body: 'The drawing precedes the city. Paper accuracy is rehearsed until steel agrees.' },
+      { title: 'Rail', body: 'Distance collapses into timetable. Villages learn the sound of not being late.' },
+      { title: 'Factory', body: 'Work is sliced into shifts. The sun is demoted; the whistle is promoted.' },
+      { title: 'Lens', body: 'Photography and journalism make strangers visible. Empires acquire a public.' },
     ],
   },
   {
@@ -510,10 +525,13 @@ export const ERAS: Era[] = [
     description:
       'Cities learn to glitter. Automobiles, radio, and Art Deco geometry invent modern glamour.',
     quote: 'The night became a stage.',
+    quoteBy: 'A city after dark',
     facts: [
-      { label: 'Sound', value: 'Jazz · Radio' },
+      { label: 'Sound', value: 'Jazz · radio' },
       { label: 'Image', value: 'Cinema' },
       { label: 'Speed', value: 'Automobile' },
+      { label: 'Line', value: 'Art Deco geometry' },
+      { label: 'Crowd', value: 'The first mass audience' },
     ],
     sections: [
       { title: 'Cinema', body: 'Light on nitrate. Faces become public monuments.' },
@@ -532,15 +550,20 @@ export const ERAS: Era[] = [
     description:
       'The analog century peaks: war, recovery, jet routes, and a flag on the Moon.',
     quote: 'We chose the Moon because it was hard.',
+    quoteBy: 'Kennedy, 1962',
     facts: [
-      { label: 'Voice', value: 'Radio · Television' },
-      { label: 'Sky', value: 'Jet · Capsule' },
+      { label: 'Voice', value: 'Radio · television' },
+      { label: 'Sky', value: 'Jet · capsule' },
       { label: '1969', value: 'Tranquility Base' },
+      { label: 'Home', value: 'Suburb · highway' },
+      { label: 'Fear', value: 'Fallout drills' },
     ],
     sections: [
-      { title: 'Radio', body: 'A shared voice in the dark living room.' },
-      { title: 'Aviation', body: 'The map becomes a network of corridors in air.' },
-      { title: 'Space', body: 'Earth is photographed as an object — small, finite, blue.' },
+      { title: 'Radio', body: 'A shared voice in the dark living room. Nations rehearse themselves every evening.' },
+      { title: 'Aviation', body: 'The map becomes a network of corridors in air. Layover is a new kind of city.' },
+      { title: 'Space', body: 'Earth is photographed as an object — small, finite, blue. Politics acquires a horizon.' },
+      { title: 'Suburb', body: 'The lawn is an ideology. Cars write the plan that planners later claim.' },
+      { title: 'Computer', body: 'Rooms of cabinets count missiles and payrolls. The future still needs a cooling fan.' },
     ],
   },
   {
@@ -552,15 +575,20 @@ export const ERAS: Era[] = [
     description:
       'Machines learn to speak. Green phosphor, then blue links, then a public internet.',
     quote: 'READY.',
+    quoteBy: 'A blinking cursor',
     facts: [
       { label: '1970s', value: 'Analog electronics' },
       { label: '1987', value: 'Personal terminal' },
       { label: '1995', value: 'The Web' },
+      { label: 'Storage', value: 'Floppy · CD-ROM' },
+      { label: 'Place', value: 'The first public square online' },
     ],
     sections: [
-      { title: 'Circuit', body: 'Hobbyists and labs invent a new kind of workshop.' },
-      { title: 'Terminal', body: 'The cursor blinks. The machine waits.' },
-      { title: 'Web', body: 'Pages, guestbooks, and the first public square online.' },
+      { title: 'Circuit', body: 'Hobbyists and labs invent a new kind of workshop. The garage becomes a foundry.' },
+      { title: 'Terminal', body: 'The cursor blinks. The machine waits. Language is typed at a machine that answers.' },
+      { title: 'Web', body: 'Pages, guestbooks, and the first public square online. Under construction is an aesthetic.' },
+      { title: 'Game', body: 'Arcades and bedrooms share a phosphor. Play teaches a generation to interface.' },
+      { title: 'Network', body: 'Email outruns the letter. Distance becomes a configuration, not a journey.' },
     ],
   },
   {
@@ -572,15 +600,20 @@ export const ERAS: Era[] = [
     description:
       'Glass, metal, and quiet software. A civilization with the archive of everything — and no agreed destination.',
     quote: 'You are standing in the only year that can still choose.',
+    quoteBy: 'This interface',
     facts: [
       { label: 'Now', value: '2026' },
-      { label: 'Interface', value: 'Glass · Gesture' },
+      { label: 'People', value: '≈ 8.2 billion' },
+      { label: 'Interface', value: 'Glass · gesture' },
+      { label: 'Archive', value: 'Almost everything' },
       { label: 'Question', value: 'Direction' },
     ],
     sections: [
-      { title: 'Minimal', body: 'The interface recedes. The feed does not.' },
-      { title: 'Memory', body: 'Almost everything is recorded. Almost nothing is kept with care.' },
-      { title: 'Threshold', body: 'Behind you: history. Ahead: speculation with consequences.' },
+      { title: 'Minimal', body: 'The interface recedes. The feed does not. Quiet chrome hides a loud economy of attention.' },
+      { title: 'Memory', body: 'Almost everything is recorded. Almost nothing is kept with care. Forgetting becomes a skill.' },
+      { title: 'Threshold', body: 'Behind you: history. Ahead: speculation with consequences. 2026 is a doorway, not a destination.' },
+      { title: 'Climate', body: 'The atmosphere is no longer background. Weather is a political object with a spreadsheet.' },
+      { title: 'Model', body: 'Language models sit beside search. Authorship becomes a collaboration you did not vote on.' },
     ],
   },
   {
@@ -592,10 +625,12 @@ export const ERAS: Era[] = [
     description:
       'A design fiction. Cities, orbits, and interfaces that do not exist — yet feel like they might.',
     quote: 'The future is a room we have not furnished.',
+    quoteBy: 'A disclaimer',
     facts: [
       { label: '2035', value: 'Human + machine' },
       { label: '2050', value: 'Vertical city' },
       { label: '2075', value: 'Cislunar life' },
+      { label: '2100', value: 'Planetary ledger' },
       { label: '2200', value: 'Other syntax' },
     ],
     sections: [

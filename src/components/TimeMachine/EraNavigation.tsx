@@ -5,7 +5,12 @@ import { PRESENT_YEAR } from '../../utils/timeline.ts'
 import { MagneticButton } from '../UI/MagneticButton.tsx'
 import { SoundToggle } from '../UI/SoundToggle.tsx'
 
-export function EraNavigation() {
+type Props = {
+  menuOpen: boolean
+  onMenu: () => void
+}
+
+export function EraNavigation({ menuOpen, onMenu }: Props) {
   const { reducedMotion } = useTimeline()
   const [full, setFull] = useState(false)
 
@@ -38,16 +43,19 @@ export function EraNavigation() {
         </MagneticButton>
       </div>
       <div className="nav-actions">
+        <MagneticButton className="text-link menu-toggle" cursor="MENU" onClick={onMenu}>
+          {menuOpen ? 'Close' : 'Menu'}
+        </MagneticButton>
         <MagneticButton
-          className="text-link"
+          className="text-link hide-narrow"
           cursor="MOTION"
           onClick={() => patchEngine({ reducedMotion: !reducedMotion })}
         >
-          {reducedMotion ? 'Motion' : 'Still'}
+          {reducedMotion ? 'Live' : 'Still'}
         </MagneticButton>
         <SoundToggle />
         <MagneticButton
-          className="text-link"
+          className="text-link hide-narrow"
           cursor="FULL"
           onClick={() => {
             if (document.fullscreenElement) void document.exitFullscreen()

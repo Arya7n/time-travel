@@ -1,5 +1,6 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
+import { adjacentEvent, EVENTS } from '../../data/events.ts'
 import { AncientEra } from '../Eras/AncientEra.tsx'
 import { ArtDecoEra } from '../Eras/ArtDecoEra.tsx'
 import { DigitalEra } from '../Eras/DigitalEra.tsx'
@@ -16,16 +17,28 @@ import { Atmosphere } from '../UI/Atmosphere.tsx'
 import { CustomCursor } from '../UI/CustomCursor.tsx'
 import { ErrorBoundary } from '../UI/ErrorBoundary.tsx'
 import { Gears } from '../UI/Gears.tsx'
+import { CompareBar } from './CompareBar.tsx'
+import { Controls } from './Controls.tsx'
+import { EchoTrail } from './EchoTrail.tsx'
 import { EraNavigation } from './EraNavigation.tsx'
 import { EraTransition } from './EraTransition.tsx'
+import { EventDock } from './EventDock.tsx'
+import { HelpSheet } from './HelpSheet.tsx'
+import { BornSheet } from './BornSheet.tsx'
+import { JumpSheet } from './JumpSheet.tsx'
+import { MobileMenu } from './MobileMenu.tsx'
 import { Timeline } from './Timeline.tsx'
+import { YearContext } from './YearContext.tsx'
 import { YearDisplay } from './YearDisplay.tsx'
+import { YearStats } from './YearStats.tsx'
 import {
   getLive,
   nudgeTarget,
+  patchEngine,
   setTarget,
   startEngine,
   stopEngine,
+  togglePlay,
 } from '../../engine/timeEngine.ts'
 import { useMousePosition } from '../../hooks/useMousePosition.ts'
 import { useIsMobile, usePrefersReducedMotion } from '../../hooks/useMedia.ts'
@@ -41,6 +54,10 @@ export function TimeMachine() {
   const mobile = useIsMobile()
   const prefersReduced = usePrefersReducedMotion()
   const mouse = useMousePosition()
+  const [jumpOpen, setJumpOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [bornOpen, setBornOpen] = useState(false)
 
   useEffect(() => {
     startEngine()
@@ -52,7 +69,7 @@ export function TimeMachine() {
     let raf = 0
     const loop = () => {
       const el = document.querySelector('.year-wrap')
-      if (el instanceof HTMLElement && !getLive().reducedMotion) {
+      if (el instanceof HTMLElement && !getLive().reducedMotion && window.innerWidth > 860) {
         const { x, y } = mouse.current
         par.x += ((x - 0.5) * 8 - par.x) * 0.05
         par.y += ((y - 0.5) * 5 - par.y) * 0.05
@@ -65,23 +82,73 @@ export function TimeMachine() {
   }, [mouse])
 
   useEffect(() => {
-    const onWheel = (event: WheelEvent) => {
+    const busy = () => {
       const state = getLive()
-      if (!state.introComplete || state.capsuleOpen || state.whatIfOpen) return
-      if ((event.target as HTMLElement | null)?.closest('.overlay')) return
+      return (
+        !state.introComplete ||
+        state.capsuleOpen ||
+        state.whatIfOpen ||
+        jumpOpen ||
+        helpOpen ||
+        bornOpen
+      )
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      if (busy()) return
+      if ((event.target as HTMLElement | null)?.closest('.overlay, .era-stack, .jump-form, .mobile-menu, .controls')) return
       event.preventDefault()
-      const speed = event.shiftKey ? 0.00115 : 0.0004
+      patchEngine({ playing: false })
+      const speed = event.shiftKey ? 0.00032 : 0.0001
+      const state = getLive()
       setTarget(tToYear(yearToT(state.target) + event.deltaY * speed))
     }
 
     const onKey = (event: KeyboardEvent) => {
+      if ((event.target as HTMLElement | null)?.closest('input, textarea')) return
+      if (busy() && event.key !== 'Escape') return
+      if (event.key === 'Escape') {
+        setJumpOpen(false)
+        setHelpOpen(false)
+        setMenuOpen(false)
+        setBornOpen(false)
+        patchEngine({ capsuleOpen: false, whatIfOpen: false })
+        return
+      }
       const state = getLive()
-      if (!state.introComplete || state.capsuleOpen || state.whatIfOpen) return
-      if (event.key === 'ArrowLeft') nudgeTarget(event.shiftKey ? -50 : -12)
-      if (event.key === 'ArrowRight') nudgeTarget(event.shiftKey ? 50 : 12)
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        nudgeTarget(event.shiftKey ? -14 : -2)
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        nudgeTarget(event.shiftKey ? 14 : 2)
+      }
       if (event.key === 'Home') setTarget(MIN_YEAR)
       if (event.key === 'End') setTarget(MAX_YEAR)
-      if (event.key === 'Enter') setTarget(PRESENT_YEAR)
+      if (event.key === 'Enter' && !event.metaKey) setTarget(PRESENT_YEAR)
+      if (event.key === ' ') {
+        event.preventDefault()
+        togglePlay()
+      }
+      if (event.key === 'j' || event.key === 'J') setJumpOpen(true)
+      if (event.key === 'b' || event.key === 'B') setBornOpen(true)
+      if (event.key === '[' || event.key === ',') {
+        event.preventDefault()
+        setTarget(adjacentEvent(state.year, -1).year)
+      }
+      if (event.key === ']' || event.key === '.') {
+        event.preventDefault()
+        setTarget(adjacentEvent(state.year, 1).year)
+      }
+      if (event.key === '?' || event.key === 'h' || event.key === 'H') setHelpOpen(true)
+      if (event.key === 'r' || event.key === 'R') {
+        patchEngine({ playing: false })
+        setTarget(EVENTS[Math.floor(Math.random() * EVENTS.length)].year)
+      }
+      if (event.key === 'p' || event.key === 'P') {
+        patchEngine({ pinnedYear: state.pinnedYear === null ? Math.round(state.year) : null })
+      }
     }
 
     let lastX = 0
@@ -89,12 +156,14 @@ export function TimeMachine() {
       lastX = event.touches[0]?.clientX ?? 0
     }
     const onTouchMove = (event: TouchEvent) => {
-      const state = getLive()
-      if (!state.introComplete || state.capsuleOpen || state.whatIfOpen) return
+      if (busy()) return
+      const target = event.target as HTMLElement | null
+      if (target?.closest('.era-stack, .overlay, .nav, .controls, .event-dock, .mobile-menu')) return
       const x = event.touches[0]?.clientX ?? lastX
       const dx = x - lastX
       lastX = x
-      setTarget(tToYear(yearToT(state.target) - dx * 0.0017))
+      patchEngine({ playing: false })
+      setTarget(tToYear(yearToT(getLive().target) - dx * 0.0007))
     }
 
     window.addEventListener('wheel', onWheel, { passive: false })
@@ -107,7 +176,7 @@ export function TimeMachine() {
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
     }
-  }, [])
+  }, [jumpOpen, helpOpen, bornOpen])
 
   return (
     <div className="machine">
@@ -120,9 +189,22 @@ export function TimeMachine() {
       <EraTransition />
       <Gears />
       <div className="machine-stage">
-        <EraNavigation />
+        <EraNavigation menuOpen={menuOpen} onMenu={() => setMenuOpen((open) => !open)} />
+        <MobileMenu
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          onJump={() => setJumpOpen(true)}
+          onBorn={() => setBornOpen(true)}
+          onHelp={() => setHelpOpen(true)}
+        />
         <div className="stage-copy">
-          <YearDisplay />
+          <div className="year-column">
+            <YearDisplay />
+            <YearContext />
+            <YearStats />
+            <CompareBar />
+            <EchoTrail />
+          </div>
           <div className="era-stack">
             <AncientEra />
             <MedievalEra />
@@ -133,12 +215,23 @@ export function TimeMachine() {
             <PresentEra />
             <FutureEra />
             <FutureScenario />
+            <EventDock />
           </div>
         </div>
-        <Timeline />
+        <div className="stage-foot">
+          <Controls
+            onJump={() => setJumpOpen(true)}
+            onHelp={() => setHelpOpen(true)}
+            onBorn={() => setBornOpen(true)}
+          />
+          <Timeline />
+        </div>
       </div>
       <TimeCapsule />
       <WhatIf />
+      <JumpSheet open={jumpOpen} onClose={() => setJumpOpen(false)} />
+      <BornSheet open={bornOpen} onClose={() => setBornOpen(false)} />
+      <HelpSheet open={helpOpen} onClose={() => setHelpOpen(false)} />
       <AnimatePresence>{introComplete ? null : <Intro key="intro" />}</AnimatePresence>
       <CustomCursor />
     </div>

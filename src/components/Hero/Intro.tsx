@@ -93,7 +93,7 @@ export function Intro() {
           >
             Explore the timeline
           </MagneticButton>
-          <p className="intro-hint">Drag to travel</p>
+          <p className="intro-hint">Play, jump, or drag slowly</p>
         </div>
       </div>
     </motion.div>

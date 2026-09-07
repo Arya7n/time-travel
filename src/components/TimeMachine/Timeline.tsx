@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
+import { EVENTS } from '../../data/events.ts'
 import { ERAS } from '../../data/eras.ts'
-import { setCursorLabel, setTarget, visual } from '../../engine/timeEngine.ts'
+import { patchEngine, setCursorLabel, setDragging, setTarget, visual } from '../../engine/timeEngine.ts'
 import { useTimeline } from '../../hooks/useTimeline.ts'
 import { clamp } from '../../utils/colors.ts'
+import { LIFE_SPAN } from '../../utils/life.ts'
 import { formatYear, tToYear, yearToT } from '../../utils/timeline.ts'
 
 const MARKS = [-3000, -500, 500, 1500, 1880, 1925, 1969, 1987, 2026, 2100, 2200]
@@ -13,8 +15,11 @@ export function Timeline() {
   const trackRef = useRef<HTMLDivElement>(null)
   const knobRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
-  const { eraId } = useTimeline()
+  const lifeRef = useRef<HTMLDivElement>(null)
+  const { eraId, birthYear } = useTimeline()
   const dragging = useRef(false)
+  const birthRef = useRef(birthYear)
+  birthRef.current = birthYear
 
   useEffect(() => {
     let raf = 0
@@ -22,6 +27,16 @@ export function Timeline() {
       const t = yearToT(visual.year)
       if (knobRef.current) knobRef.current.style.left = `${t * 100}%`
       if (progressRef.current) progressRef.current.style.width = `${t * 100}%`
+      if (lifeRef.current) {
+        const origin = birthRef.current ?? visual.year
+        const start = yearToT(origin)
+        const end = yearToT(origin + LIFE_SPAN)
+        const left = Math.min(start, end) * 100
+        const width = Math.abs(end - start) * 100
+        lifeRef.current.style.left = `${left}%`
+        lifeRef.current.style.width = `${Math.max(width, 0.35)}%`
+        lifeRef.current.dataset.own = birthRef.current === null ? 'ghost' : 'life'
+      }
       raf = requestAnimationFrame(loop)
     }
     raf = requestAnimationFrame(loop)
@@ -39,6 +54,8 @@ export function Timeline() {
 
     const onPointerDown = (event: PointerEvent) => {
       dragging.current = true
+      setDragging(true)
+      patchEngine({ playing: false })
       track.setPointerCapture(event.pointerId)
       setTarget(yearFromX(event.clientX), true)
       setCursorLabel('DRAG')
@@ -49,6 +66,7 @@ export function Timeline() {
     }
     const onPointerUp = () => {
       dragging.current = false
+      setDragging(false)
       setCursorLabel('')
     }
 
@@ -67,15 +85,19 @@ export function Timeline() {
   return (
     <div className="timeline">
       <div className="timeline-hint">
-        <span>3000 BC — 2200</span>
-        <span className="mobile-hint">Swipe through time</span>
+          <span>3000 BC — 2200</span>
+          <span className="life-legend">band = one lifetime</span>
+          <span className="mobile-hint">Swipe the year or the track</span>
       </div>
       <div className="era-labels">
         {ERAS.map((era) => (
           <button
             key={era.id}
             className={eraId === era.id ? 'active' : ''}
-            onClick={() => setTarget((era.startYear + era.endYear) / 2)}
+            onClick={() => {
+              patchEngine({ playing: false })
+              setTarget((era.startYear + era.endYear) / 2)
+            }}
             onPointerEnter={() => setCursorLabel('TRAVEL')}
             onPointerLeave={() => setCursorLabel('')}
           >
@@ -86,6 +108,7 @@ export function Timeline() {
       <div ref={trackRef} className="track" role="slider" aria-label="Timeline year" tabIndex={0}>
         <div className="track-line" />
         <div ref={progressRef} className="track-progress" />
+        <div ref={lifeRef} className="life-ribbon" title="One human lifetime" />
         <div className="track-marks">
           {MARKS.map((year) => (
             <button
@@ -94,6 +117,20 @@ export function Timeline() {
               style={{ left: `${yearToT(year) * 100}%` }}
               aria-label={`Go to ${year}`}
               onClick={() => setTarget(year)}
+            />
+          ))}
+          {EVENTS.map((event) => (
+            <button
+              key={event.title}
+              className="event-mark"
+              style={{ left: `${yearToT(event.year) * 100}%` }}
+              title={`${formatYear(event.year)} · ${event.title}`}
+              aria-label={event.title}
+              onClick={(click) => {
+                click.stopPropagation()
+                patchEngine({ playing: false })
+                setTarget(event.year)
+              }}
             />
           ))}
           {LABELS.map((year) => (
