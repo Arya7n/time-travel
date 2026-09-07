@@ -1,4 +1,3 @@
-import { Maximize, Minimize, Orbit } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { patchEngine, setTarget } from '../../engine/timeEngine.ts'
 import { useTimeline } from '../../hooks/useTimeline.ts'
@@ -19,14 +18,14 @@ export function EraNavigation() {
   return (
     <nav className="nav">
       <MagneticButton className="brand" cursor="NOW" onClick={() => setTarget(PRESENT_YEAR)}>
-        TIME MACHINE
+        Time Machine
       </MagneticButton>
       <div className="nav-links">
         <MagneticButton cursor="VIEW" onClick={() => setTarget(-440)}>
-          ERAS
+          Eras
         </MagneticButton>
         <MagneticButton cursor="ENTER" onClick={() => patchEngine({ capsuleOpen: true })}>
-          CAPSULE
+          Capsule
         </MagneticButton>
         <MagneticButton
           cursor="EXPLORE"
@@ -35,27 +34,27 @@ export function EraNavigation() {
             patchEngine({ whatIfOpen: true })
           }}
         >
-          FUTURE
+          Future
         </MagneticButton>
       </div>
       <div className="nav-actions">
         <MagneticButton
-          className="icon-btn"
+          className="text-link"
           cursor="MOTION"
           onClick={() => patchEngine({ reducedMotion: !reducedMotion })}
         >
-          <Orbit size={14} />
+          {reducedMotion ? 'Motion' : 'Still'}
         </MagneticButton>
         <SoundToggle />
         <MagneticButton
-          className="icon-btn"
+          className="text-link"
           cursor="FULL"
           onClick={() => {
             if (document.fullscreenElement) void document.exitFullscreen()
             else void document.documentElement.requestFullscreen()
           }}
         >
-          {full ? <Minimize size={14} /> : <Maximize size={14} />}
+          {full ? 'Exit' : 'Full'}
         </MagneticButton>
       </div>
     </nav>

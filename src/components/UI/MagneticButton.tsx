@@ -23,16 +23,28 @@ export function MagneticButton({
     const el = ref.current
     if (!el) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const state = { x: 0, y: 0, tx: 0, ty: 0 }
+    let raf = 0
+
+    const loop = () => {
+      state.x += (state.tx - state.x) * 0.16
+      state.y += (state.ty - state.y) * 0.16
+      el.style.transform = `translate3d(${state.x}px, ${state.y}px, 0)`
+      raf = requestAnimationFrame(loop)
+    }
+    raf = requestAnimationFrame(loop)
 
     const onMove = (event: PointerEvent) => {
       if (reduced) return
       const box = el.getBoundingClientRect()
-      const x = event.clientX - (box.left + box.width / 2)
-      const y = event.clientY - (box.top + box.height / 2)
-      el.style.transform = `translate(${x * 0.22}px, ${y * 0.22}px)`
+      const dx = event.clientX - (box.left + box.width / 2)
+      const dy = event.clientY - (box.top + box.height / 2)
+      state.tx = Math.max(-14, Math.min(14, dx * 0.22))
+      state.ty = Math.max(-10, Math.min(10, dy * 0.22))
     }
     const onLeave = () => {
-      el.style.transform = 'translate(0,0)'
+      state.tx = 0
+      state.ty = 0
       setCursorLabel('')
     }
     const onEnter = () => setCursorLabel(cursor)
@@ -41,6 +53,7 @@ export function MagneticButton({
     el.addEventListener('pointerleave', onLeave)
     el.addEventListener('pointerenter', onEnter)
     return () => {
+      cancelAnimationFrame(raf)
       el.removeEventListener('pointermove', onMove)
       el.removeEventListener('pointerleave', onLeave)
       el.removeEventListener('pointerenter', onEnter)

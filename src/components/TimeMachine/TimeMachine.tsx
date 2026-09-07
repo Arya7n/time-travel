@@ -48,12 +48,15 @@ export function TimeMachine() {
   }, [])
 
   useEffect(() => {
+    const par = { x: 0, y: 0 }
     let raf = 0
     const loop = () => {
       const el = document.querySelector('.year-wrap')
       if (el instanceof HTMLElement && !getLive().reducedMotion) {
         const { x, y } = mouse.current
-        el.style.transform = `translate(${(x - 0.5) * 18}px, ${(y - 0.5) * 10}px)`
+        par.x += ((x - 0.5) * 8 - par.x) * 0.05
+        par.y += ((y - 0.5) * 5 - par.y) * 0.05
+        el.style.transform = `translate3d(${par.x}px, ${par.y}px, 0)`
       }
       raf = requestAnimationFrame(loop)
     }

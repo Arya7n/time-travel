@@ -12,44 +12,47 @@ export function WhatIf() {
       {whatIfOpen ? (
         <motion.div
           className="overlay"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 16 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <button className="close-x" type="button" onClick={() => patchEngine({ whatIfOpen: false })}>
-            CLOSE
+            Close
           </button>
-          <p className="overlay-kicker">WHAT IF?</p>
-          <h2 className="era-title">CHOOSE A FUTURE</h2>
+          <p className="overlay-kicker">What if?</p>
+          <h2 className="era-title">Choose a future</h2>
           <p className="era-desc">
             Speculative visual worlds — not predictions. Each choice re-skins the years ahead.
           </p>
-          <div className="scenario-grid">
-            {SCENARIOS.map((item) => (
+          <div className="choice-list">
+            {SCENARIOS.map((item, index) => (
               <button
                 key={item.id}
                 type="button"
-                className="scenario-btn"
+                className="choice"
                 onClick={() => {
                   patchEngine({ scenario: item.id, whatIfOpen: false })
                   setTarget(item.id === 'space' ? 2075 : 2100)
                 }}
               >
-                <small>{item.kicker}</small>
-                <h3 className="era-title" style={{ fontSize: '1.2rem', margin: 0 }}>
-                  {item.title}
-                </h3>
-                <p>{item.description}</p>
+                <span className="idx">{String(index + 1).padStart(2, '0')}</span>
+                <span>
+                  <b>{item.title}</b>
+                  <small>{item.kicker}</small>
+                  <p>{item.description}</p>
+                </span>
               </button>
             ))}
           </div>
           {scenario !== 'none' ? (
-            <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ marginTop: '2rem' }}>
               <MagneticButton
+                className="text-link"
                 cursor="RESET"
                 onClick={() => patchEngine({ scenario: 'none' })}
               >
-                CLEAR SCENARIO
+                Clear scenario
               </MagneticButton>
             </div>
           ) : null}

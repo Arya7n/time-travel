@@ -21,7 +21,7 @@ export function TimeCapsule() {
     if (!capsuleOpen) return
     const id = window.setInterval(() => {
       setStage((current) => (current + 1) % capsule.stages.length)
-    }, 3800)
+    }, 4200)
     const trigger = ScrollTrigger.create({
       scroller: '.overlay',
       trigger: '.capsule-stage',
@@ -29,8 +29,8 @@ export function TimeCapsule() {
     })
     gsap.fromTo(
       '.overlay-kicker',
-      { opacity: 0.4, y: 12 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+      { opacity: 0.25 },
+      { opacity: 1, duration: 0.8, ease: 'power2.out' },
     )
     return () => {
       window.clearInterval(id)
@@ -43,16 +43,17 @@ export function TimeCapsule() {
       {capsuleOpen ? (
         <motion.div
           className="overlay"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 16 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <button className="close-x" type="button" onClick={() => patchEngine({ capsuleOpen: false })}>
-            CLOSE
+            Close
           </button>
-          <p className="overlay-kicker">TIME CAPSULE</p>
+          <p className="overlay-kicker">Time capsule</p>
           <h2 className="era-title">
-            What would life feel like if you woke up in {formatYear(capsule.year)}
+            If you woke in {formatYear(capsule.year)}
           </h2>
           <p className="era-desc">
             {capsule.eraName}. {capsule.headline}
@@ -61,10 +62,10 @@ export function TimeCapsule() {
             <motion.div
               key={capsule.stages[stage].id}
               className="capsule-stage"
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -24 }}
-              transition={{ duration: 0.55 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             >
               <p className="era-kicker">{capsule.stages[stage].title}</p>
               <p className="era-desc">{capsule.stages[stage].body}</p>
@@ -72,25 +73,25 @@ export function TimeCapsule() {
           </AnimatePresence>
           <div className="capsule-nav">
             {capsule.stages.map((item, index) => (
-              <MagneticButton
+              <button
                 key={item.id}
-                className="icon-btn"
-                cursor="VIEW"
+                type="button"
+                className={index === stage ? 'dot is-on' : 'dot'}
+                aria-label={item.title}
                 onClick={() => setStage(index)}
-              >
-                {index + 1}
-              </MagneticButton>
+              />
             ))}
           </div>
-          <div style={{ marginTop: '2rem' }}>
+          <div style={{ marginTop: '2.4rem' }}>
             <MagneticButton
+              className="text-link"
               cursor="TRAVEL"
               onClick={() => {
                 setTarget(capsule.year)
                 patchEngine({ capsuleOpen: false })
               }}
             >
-              ENTER {formatYear(capsule.year)}
+              Enter {formatYear(capsule.year)}
             </MagneticButton>
           </div>
         </motion.div>

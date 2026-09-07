@@ -8,11 +8,8 @@ export function FutureScenario() {
   if (!active) return null
 
   return (
-    <div className="planet-legend" style={{ left: '6vw', right: 'auto', top: '22%' }}>
-      <div className="era-card">
-        <h3>{active.title}</h3>
-        <p>{active.bullets[0]}</p>
-      </div>
-    </div>
+    <p className="meta-note">
+      {active.title} — {active.bullets[0]}
+    </p>
   )
 }

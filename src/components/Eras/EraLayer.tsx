@@ -24,7 +24,6 @@ export function EraCopy({ id, extra }: { id: EraId; extra?: ReactNode }) {
   return (
     <>
       <p className="era-kicker">{era.kicker}</p>
-      <h2 className="era-title">{era.name}</h2>
       <p className="era-desc">{era.description}</p>
       {extra}
       <div className="era-facts">
@@ -36,10 +35,13 @@ export function EraCopy({ id, extra }: { id: EraId; extra?: ReactNode }) {
         ))}
       </div>
       <div className="era-sections">
-        {era.sections.map((section) => (
-          <article className="era-card" key={section.title}>
-            <h3>{section.title}</h3>
-            <p>{section.body}</p>
+        {era.sections.slice(0, 4).map((section, index) => (
+          <article className="era-entry" key={section.title}>
+            <span className="idx">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{section.title}</h3>
+              <p>{section.body}</p>
+            </div>
           </article>
         ))}
       </div>

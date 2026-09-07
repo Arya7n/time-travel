@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { eraById } from '../../data/eras.ts'
 import { visual } from '../../engine/timeEngine.ts'
+import { useTimeline } from '../../hooks/useTimeline.ts'
 import { formatYear } from '../../utils/timeline.ts'
 
 function DigitColumn({ value }: { value: number }) {
@@ -15,6 +17,8 @@ function DigitColumn({ value }: { value: number }) {
 }
 
 export function YearDisplay() {
+  const { eraId } = useTimeline()
+  const era = eraById(eraId)
   const [text, setText] = useState(() => formatYear(visual.year))
   const last = useRef(text)
 
@@ -45,6 +49,7 @@ export function YearDisplay() {
         </div>
         {bc ? <span className="year-suffix">BC</span> : null}
       </div>
+      <p className="year-era">{era.name}</p>
     </div>
   )
 }

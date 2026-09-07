@@ -1,4 +1,3 @@
-import { Volume2, VolumeX } from 'lucide-react'
 import { setMuted, unlockAudio } from '../../engine/audio.ts'
 import { patchEngine } from '../../engine/timeEngine.ts'
 import { useTimeline } from '../../hooks/useTimeline.ts'
@@ -9,7 +8,7 @@ export function SoundToggle() {
 
   return (
     <MagneticButton
-      className="icon-btn"
+      className="text-link"
       cursor={muted ? 'SOUND' : 'MUTE'}
       onClick={async () => {
         await unlockAudio()
@@ -18,7 +17,7 @@ export function SoundToggle() {
         setMuted(next)
       }}
     >
-      {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+      {muted ? 'Sound' : 'Mute'}
     </MagneticButton>
   )
 }

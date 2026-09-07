@@ -3,22 +3,25 @@ import { ERAS } from '../../data/eras.ts'
 import { setCursorLabel, setTarget, visual } from '../../engine/timeEngine.ts'
 import { useTimeline } from '../../hooks/useTimeline.ts'
 import { clamp } from '../../utils/colors.ts'
-import { tToYear, yearToT } from '../../utils/timeline.ts'
+import { formatYear, tToYear, yearToT } from '../../utils/timeline.ts'
 
 const MARKS = [-3000, -500, 500, 1500, 1880, 1925, 1969, 1987, 2026, 2100, 2200]
+const LABELS = [-3000, 1500, 1925, 2026, 2200]
+const MAJOR = new Set([-3000, 1500, 1925, 2026, 2200])
 
 export function Timeline() {
   const trackRef = useRef<HTMLDivElement>(null)
   const knobRef = useRef<HTMLDivElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
   const { eraId } = useTimeline()
   const dragging = useRef(false)
 
   useEffect(() => {
     let raf = 0
     const loop = () => {
-      if (knobRef.current) {
-        knobRef.current.style.left = `${yearToT(visual.year) * 100}%`
-      }
+      const t = yearToT(visual.year)
+      if (knobRef.current) knobRef.current.style.left = `${t * 100}%`
+      if (progressRef.current) progressRef.current.style.width = `${t * 100}%`
       raf = requestAnimationFrame(loop)
     }
     raf = requestAnimationFrame(loop)
@@ -64,9 +67,8 @@ export function Timeline() {
   return (
     <div className="timeline">
       <div className="timeline-hint">
-        <span>ANCIENT → FUTURE</span>
-        <span className="mobile-hint">SWIPE THROUGH TIME</span>
-        <span>DRAG · WHEEL · ARROWS</span>
+        <span>3000 BC — 2200</span>
+        <span className="mobile-hint">Swipe through time</span>
       </div>
       <div className="era-labels">
         {ERAS.map((era) => (
@@ -83,15 +85,21 @@ export function Timeline() {
       </div>
       <div ref={trackRef} className="track" role="slider" aria-label="Timeline year" tabIndex={0}>
         <div className="track-line" />
+        <div ref={progressRef} className="track-progress" />
         <div className="track-marks">
           {MARKS.map((year) => (
             <button
               key={year}
-              className="mark"
+              className={MAJOR.has(year) ? 'mark major' : 'mark'}
               style={{ left: `${yearToT(year) * 100}%` }}
               aria-label={`Go to ${year}`}
               onClick={() => setTarget(year)}
             />
+          ))}
+          {LABELS.map((year) => (
+            <span key={`l-${year}`} className="tick-label" style={{ left: `${yearToT(year) * 100}%` }}>
+              {formatYear(year)}
+            </span>
           ))}
         </div>
         <div ref={knobRef} className="knob" />
